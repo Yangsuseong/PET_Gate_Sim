@@ -1,0 +1,311 @@
+/gate/geometry/setMaterialDatabase /home/gate/Progs/Gate/gate_v7.0/GateMaterials.db
+/control/execute ../visualization.mac
+
+
+
+
+
+ # world volume의 XLength 설정
+/gate/world/geometry/setXLength 40. cm  
+ # world volume의 YLength 설정  
+/gate/world/geometry/setYLength 40. cm    
+# world volume의 ZLength 설정
+/gate/world/geometry/setZLength 40. cm  
+
+# World의 daughter volume인 cylindricalPET 생성
+ /gate/world/daughters/name cylindricalPET
+ # cylindricalPET 의 모양 설정
+/gate/world/daughters/insert cylinder
+# cylindricalPET 의 Material 설정
+/gate/cylindricalPET/setMaterial Water
+ # cylindricalPET 의 geometry 설정
+ /gate/cylindricalPET/geometry/setRmax 10 cm
+/gate/cylindricalPET/geometry/setRmin 8 cm
+/gate/cylindricalPET/geometry/setHeight 1 cm
+ # cylindricalPET 의 visualization
+/gate/cylindricalPET/vis/forceWireframe
+/gate/run/initialize
+
+
+
+# Crystal 생성 및 반복을 통한 detector 생성 및 Phantom 생성
+#    HEAD
+/gate/cylindricalPET/daughters/name           head
+/gate/cylindricalPET/daughters/insert         box
+/gate/head/placement/setTranslation           8.5 0.0 0.0 cm
+/gate/head/geometry/setXLength                0.5 cm
+/gate/head/geometry/setYLength                4.5 cm
+/gate/head/geometry/setZLength                1 cm
+/gate/head/setMaterial                        Air
+
+/gate/head/vis/setVisible                     0
+/vis/viewer/zoom 3
+
+#    BLOCK
+/gate/head/daughters/name                     block
+/gate/head/daughters/insert                   box
+/gate/block/placement/setTranslation          0.0 0.0 0.0 cm
+/gate/block/geometry/setXLength               1 cm
+/gate/block/geometry/setYLength               1.5 cm
+/gate/block/geometry/setZLength               1 cm
+/gate/block/setMaterial                       Air
+
+/gate/block/vis/setColor yellow
+/gate/block/vis/setVisible                    0
+
+
+#    C R Y S T A L
+/gate/block/daughters/name                    crystal
+/gate/block/daughters/insert                  box
+/gate/crystal/placement/setTranslation        0.0 0.0 0.0 cm
+/gate/crystal/geometry/setXLength             0.5 cm
+/gate/crystal/geometry/setYLength             0.5 cm
+/gate/crystal/geometry/setZLength             1 cm
+/gate/crystal/setMaterial                     Air
+
+/gate/crystal/vis/setVisible                  0
+
+
+#    LSO layer
+/gate/crystal/daughters/name                  LSO
+/gate/crystal/daughters/insert                box
+/gate/LSO/placement/setTranslation            -0.125 0.0 0.0 cm
+/gate/LSO/geometry/setXLength                 0.25 cm
+/gate/LSO/geometry/setYLength                 0.25 cm
+/gate/LSO/geometry/setZLength                 1 cm
+/gate/LSO/setMaterial                         LSO
+/gate/LSO/vis/setColor                        red
+
+#    BGO layer
+/gate/crystal/daughters/name                  BGO
+/gate/crystal/daughters/insert                box
+/gate/BGO/placement/setTranslation            0.125 0.0 0.0 cm
+/gate/BGO/geometry/setXLength                 0.25 cm
+/gate/BGO/geometry/setYLength                 0.25 cm
+/gate/BGO/geometry/setZLength                 1 cm
+/gate/BGO/setMaterial                         BGO
+/gate/BGO/vis/setColor                        yellow
+
+# LSO REPEAT
+/gate/LSO/repeaters/insert            cubicArray
+/gate/LSO/cubicArray/setRepeatNumberX     1
+/gate/LSO/cubicArray/setRepeatNumberY     2
+/gate/LSO/cubicArray/setRepeatNumberZ     1
+/gate/LSO/cubicArray/setRepeatVector      0.0 0.2 0.0 cm
+
+# BGO REPEAT
+/gate/BGO/repeaters/insert            cubicArray
+/gate/BGO/cubicArray/setRepeatNumberX     1
+/gate/BGO/cubicArray/setRepeatNumberY     2
+/gate/BGO/cubicArray/setRepeatNumberZ     1
+/gate/BGO/cubicArray/setRepeatVector      0.0 0.2 0.0 cm
+
+#    R E P E A T    crystal
+/gate/crystal/repeaters/insert                  cubicArray
+/gate/crystal/cubicArray/setRepeatNumberX       1
+/gate/crystal/cubicArray/setRepeatNumberY       3
+/gate/crystal/cubicArray/setRepeatNumberZ       1
+/gate/crystal/cubicArray/setRepeatVector        0.0 0.46 0.0 cm
+
+#    R E P E A T    BLOCK
+/gate/block/repeaters/insert                  cubicArray
+/gate/block/cubicArray/setRepeatNumberX       1
+/gate/block/cubicArray/setRepeatNumberY       3
+/gate/block/cubicArray/setRepeatNumberZ       1
+/gate/block/cubicArray/setRepeatVector        0.0 1.36 0.0 cm
+
+
+#    R E P E A T HEAD
+/gate/head/repeaters/insert                   ring
+/gate/head/ring/setRepeatNumber               8
+
+
+#    A T T A C H    S Y S T E M
+/gate/systems/cylindricalPET/rsector/attach   head
+/gate/systems/cylindricalPET/module/attach    block
+/gate/systems/cylindricalPET/crystal/attach   crystal
+/gate/systems/cylindricalPET/layer0/attach    LSO
+/gate/systems/cylindricalPET/layer1/attach    BGO
+
+
+#    A T T A C H    C R Y S T A L  SD
+
+/gate/LSO/attachCrystalSD
+/gate/BGO/attachCrystalSD
+
+/gate/systems/cylindricalPET/describe
+
+/gate/cylindricalPET/moves/insert             orbiting
+/gate/cylindricalPET/orbiting/setSpeed        30 deg/s
+/gate/cylindricalPET/orbiting/setPoint1       0 0 0 cm
+/gate/cylindricalPET/orbiting/setPoint2       0 0 1 cm
+
+
+#=====================================================
+#  P H A N T O M 
+#=====================================================
+
+/gate/world/daughters/name                    phantom
+/gate/world/daughters/insert                  cylinder
+/gate/phantom/placement/setTranslation 0.0 0.0 0.0 cm
+/gate/phantom/geometry/setRmax         0.5 cm
+/gate/phantom/geometry/setRmin         0 cm
+/gate/phantom/geometry/setHeight       0.1 mm
+/gate/phantom/setMaterial              Water
+/gate/phantom/vis/setColor             blue
+/gate/phantom/attachPhantomSD
+
+# PHYSICS
+#=====================================================
+
+/gate/physics/addProcess PhotoElectric
+/gate/physics/processes/PhotoElectric/setModel StandardModel
+
+/gate/physics/addProcess Compton
+/gate/physics/processes/Compton/setModel StandardModel
+
+/gate/physics/addProcess RayleighScattering
+/gate/physics/processes/RayleighScattering/setModel PenelopeModel
+
+/gate/physics/addProcess ElectronIonisation
+/gate/physics/processes/ElectronIonisation/setModel StandardModel e-
+/gate/physics/processes/ElectronIonisation/setModel StandardModel e+
+
+/gate/physics/addProcess Bremsstrahlung
+/gate/physics/processes/Bremsstrahlung/setModel StandardModel e-
+/gate/physics/processes/Bremsstrahlung/setModel StandardModel e+
+
+/gate/physics/addProcess PositronAnnihilation
+
+/gate/physics/addProcess MultipleScattering e+
+/gate/physics/addProcess MultipleScattering e-
+
+/gate/physics/processList Enabled
+/gate/physics/processList Initialized
+
+#=====================================================
+# CUTS
+#=====================================================
+
+/gate/physics/Gamma/SetCutInRegion      LSO 1.0 mm
+/gate/physics/Electron/SetCutInRegion   LSO 1.0 mm
+/gate/physics/Positron/SetCutInRegion   LSO 1.0 mm
+
+/gate/physics/Gamma/SetCutInRegion      BGO 1.0 mm
+/gate/physics/Electron/SetCutInRegion   BGO 1.0 mm
+/gate/physics/Positron/SetCutInRegion   BGO 1.0 mm
+
+/gate/physics/Gamma/SetCutInRegion      phantom 0.1 mm
+/gate/physics/Electron/SetCutInRegion   phantom 0.1 mm
+/gate/physics/Positron/SetCutInRegion   phantom 0.1 mm
+
+/gate/physics/SetMaxStepSizeInRegion    phantom 0.01 mm
+
+
+
+
+# INITIALISATION
+#=====================================================
+
+/gate/run/initialize
+
+
+
+
+
+#    C O I N C I D E N C E    S O R T E R
+
+/gate/digitizer/Coincidences/setWindow          10. ns
+
+/gate/digitizer/name                            delay
+/gate/digitizer/insert                          coincidenceSorter
+/gate/digitizer/delay/setWindow                 10. ns
+/gate/digitizer/delay/setOffset                 500. ns
+
+
+#  P A R T I C L E   S O U R C E
+ 
+/gate/source/addSource                                         posiC11
+
+#/gate/source/posiC11/gps/particle                              e+
+#/gate/source/posiC11/gps/energytype                            Carbon11
+/gate/source/posiC11/setType backtoback
+
+# The particles emitted by the source are gammas
+/gate/source/posiC11/gps/particle gamma
+
+# The gammas have an energy of 511 keV
+/gate/source/posiC11/gps/energytype Mono
+/gate/source/posiC11/gps/monoenergy 0.511 MeV
+
+/gate/source/posiC11/setActivity                               1000 becquerel
+
+/gate/source/posiC11/setForcedUnstableFlag                     true
+/gate/source/posiC11/setForcedHalfLife                         1223 s
+/gate/source/posiC11/gps/angtype                               iso
+
+# theta 각도 설정
+/gate/source/posiC11/gps/mintheta 90. deg 
+/gate/source/posiC11/gps/maxtheta 90. deg 
+# phi 각도 설정
+/gate/source/posiC11/gps/minphi 0. deg 
+/gate/source/posiC11/gps/maxphi 360. deg 
+
+# type 정의
+/gate/source/posiC11/gps/type Volume 
+# shape 정의
+/gate/source/posiC11/gps/shape Cylinder 
+/gate/source/posiC11/gps/radius 0.5 cm 
+/gate/source/posiC11/gps/halfz 1. mm
+
+# Source의 위치 정의
+#/gate/source/posiC11/gps/centre 0. 0. 0. cm
+
+/gate/source/posiC11/attachTo phantom
+
+#/gate/source/posiC11/visualize 200 yellow 3
+
+/gate/source/list
+
+
+#  D A T A   O U T P U T   
+
+/gate/output/root/enable
+/gate/output/root/setFileName             YourFile
+/gate/output/root/setRootHitFlag          0
+/gate/output/root/setRootSinglesFlag      0
+/gate/output/root/setRootCoincidencesFlag 1
+/gate/output/root/setRootdelayFlag        0
+
+# ASCII Output format
+/gate/output/ascii/enable
+/gate/output/ascii/setFileName test
+/gate/output/ascii/setOutFileHitsFlag 1
+/gate/output/ascii/setOutFileSinglesFlag 1
+/gate/output/ascii/setOutFileCoincidencesFlag 1
+
+
+
+#  R A N D O M   E N G I N E  A N D  S E E D
+#================================================
+# JamesRandom Ranlux64 MersenneTwister
+/gate/random/setEngineName JamesRandom
+/gate/random/setEngineSeed default
+/gate/random/setEngineSeed auto
+/gate/random/setEngineSeed 123456789
+/gate/random/setEngineSeed default
+/gate/random/resetEngineFrom fileName
+/gate/random/verbose 1
+
+
+
+
+
+#   M E A S U R E M E N T   S E T T I N G S   
+#=====================================================
+
+/gate/application/setTimeSlice   1 s
+/gate/application/setTimeStart   0   s
+/gate/application/setTimeStop   10 s
+/gate/application/startDAQ
+
