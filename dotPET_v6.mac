@@ -160,12 +160,12 @@
 /gate/systems/cylindricalPET/module/attach    block
 /gate/systems/cylindricalPET/crystal/attach   crystal
 /gate/systems/cylindricalPET/layer0/attach    LSO
-/gate/systems/cylindricalPET/layer1/attach    BGO
+#/gate/systems/cylindricalPET/layer1/attach    BGO
 
 #	A T T A C H    C R Y S T A L  SD
 
 /gate/LSO/attachCrystalSD
-/gate/BGO/attachCrystalSD
+#/gate/BGO/attachCrystalSD
 
 /gate/systems/cylindricalPET/describe
 
