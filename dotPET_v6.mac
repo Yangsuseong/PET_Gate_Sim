@@ -104,8 +104,8 @@
 #	C R Y S T A L
 /gate/block/daughters/name                    crystal
 /gate/block/daughters/insert                  box
-/gate/crystal/placement/setTranslation        -0.75 0.0 0.0 cm
-/gate/crystal/geometry/setXLength             1.5 cm
+/gate/crystal/placement/setTranslation        0.0 0.0 0.0 cm
+/gate/crystal/geometry/setXLength             3 cm
 /gate/crystal/geometry/setYLength             11 cm
 /gate/crystal/geometry/setZLength             13 cm
 /gate/crystal/setMaterial                     Air
@@ -115,8 +115,8 @@
 #	LSO layer
 /gate/crystal/daughters/name                  LSO
 /gate/crystal/daughters/insert                box
-/gate/LSO/placement/setTranslation            0.0 0.0 0.0 cm
-/gate/LSO/geometry/setXLength                 3 cm
+/gate/LSO/placement/setTranslation            -0.75 0.0 0.0 cm
+/gate/LSO/geometry/setXLength                 1.5 cm
 /gate/LSO/geometry/setYLength                 11 cm
 /gate/LSO/geometry/setZLength                 13 cm
 /gate/LSO/setMaterial                         LSO
@@ -124,15 +124,15 @@
 /gate/LSO/vis/setColor                        red
 
 #	BGO layer
-#/gate/crystal/daughters/name                  BGO
-#/gate/crystal/daughters/insert                box
-#/gate/BGO/placement/setTranslation            0.0 0.0 0.0 cm
-#/gate/BGO/geometry/setXLength                 3 cm
-#/gate/BGO/geometry/setYLength                 11 cm
-#/gate/BGO/geometry/setZLength                 13 cm
-#/gate/BGO/setMaterial                         BGO
-#/gate/BGO/vis/forceSolid
-#/gate/BGO/vis/setColor                        yellow
+/gate/crystal/daughters/name                  BGO
+/gate/crystal/daughters/insert                box
+/gate/BGO/placement/setTranslation            0.75 0.0 0.0 cm
+/gate/BGO/geometry/setXLength                 1.5 cm
+/gate/BGO/geometry/setYLength                 11 cm
+/gate/BGO/geometry/setZLength                 13 cm
+/gate/BGO/setMaterial                         BGO
+/gate/BGO/vis/forceSolid
+/gate/BGO/vis/setColor                        yellow
 
 #	R E P E A T    C R Y S T A L
 #/gate/crystal/repeaters/insert                cubicArray
@@ -147,7 +147,7 @@
 /gate/block/cubicArray/setRepeatNumberX       1
 /gate/block/cubicArray/setRepeatNumberY       3
 /gate/block/cubicArray/setRepeatNumberZ       3
-/gate/block/cubicArray/setRepeatVector        0.0 11.0 13.0 mm
+/gate/block/cubicArray/setRepeatVector        0.0 11.0 13.0 cm
 
 
 #	R E P E A T HEAD
@@ -165,7 +165,7 @@
 #	A T T A C H    C R Y S T A L  SD
 
 /gate/LSO/attachCrystalSD
-#/gate/BGO/attachCrystalSD
+/gate/BGO/attachCrystalSD
 
 /gate/systems/cylindricalPET/describe
 
